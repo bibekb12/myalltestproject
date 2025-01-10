@@ -215,16 +215,16 @@ class SnippetViewSet(viewsets.ModelViewSet):
     serializer_class = SnippetSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
-    @action(detail=True)
+    @action(detail=True, renderer_classes=[renderers.StaticHTMLRenderer])
     def highlight(self,request, *args, **kwargs):
         snippet = self.get_object()
-        return Response(snippet.highlight)
+        return Response(snippet.highlighted)
     
-    def get_renderer_context(self):
-        context= super().get_renderer_context()
-        if self.action == 'highlight':
-            context['renderer']= renderers.StaticHTMLRenderer()
-        return context
+    # def get_renderer_context(self):
+    #     context= super().get_renderer_context()
+    #     if self.action == 'highlight':
+    #         context['renderer']= renderers.StaticHTMLRenderer()
+    #     return context
     
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
